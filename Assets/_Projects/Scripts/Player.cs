@@ -60,10 +60,10 @@ void Move()
         float currentSpeed = _isSlowMode ? _slowSpeed : _normalSpeed;
         transform.position += movement.normalized * currentSpeed * Time.deltaTime;
         
-        // 画面端での移動制限（プレイエリア: 1152*1080）
+        // 画面端での移動制限（プレイエリア: 1152*1080、ピクセル=1m）
         Vector3 pos = transform.position;
-        pos.x = Mathf.Clamp(pos.x, -5.76f, 5.76f); // 1152/2 = 576, Unity units = 576/100 = 5.76
-        pos.y = Mathf.Clamp(pos.y, -5.4f, 5.4f);   // 1080/2 = 540, Unity units = 540/100 = 5.4
+        pos.x = Mathf.Clamp(pos.x, -576f, 576f); // プレイエリア幅1152の半分
+        pos.y = Mathf.Clamp(pos.y, -540f, 540f); // プレイエリア高1080の半分
         transform.position = pos;
     }
     
