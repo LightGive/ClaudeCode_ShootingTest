@@ -5,7 +5,7 @@ public class Player : MonoBehaviour
 {
     [SerializeField] float _normalSpeed;
     [SerializeField] float _slowSpeed;
-    [SerializeField] GameObject _bulletPrefab;
+    
     [SerializeField] Transform _bulletSpawnPoint;
     [SerializeField] float _bulletFireRate;
     
@@ -22,17 +22,34 @@ public class Player : MonoBehaviour
     void Start()
     {
         _remainingLives = 3;
+        
+        // デフォルト値を設定（Inspectorで設定しない場合）
+        if (_bulletFireRate <= 0f)
+        {
+            _bulletFireRate = 10f; // 秒間6発
+        }
     }
     
     void Update()
     {
         HandleInput();
         Move();
+        
+        // Zキーを押している間、連射する
+        if (_isFiring)
+        {
+            if (Time.time >= _nextFireTime)
+            {
+                Fire();
+                _nextFireTime = Time.time + (1f / _bulletFireRate);
+            }
+        }
     }
     
     void HandleInput()
     {
         _isSlowMode = Keyboard.current.leftShiftKey.isPressed || Keyboard.current.rightShiftKey.isPressed;
+        _isFiring = Keyboard.current.zKey.isPressed;
     }
     
     void Move()
@@ -68,7 +85,17 @@ public class Player : MonoBehaviour
     
     void Fire()
     {
-        
+        if (_bulletSpawnPoint != null)
+        {
+            BulletMovementData movementData = new BulletMovementData
+            {
+                Direction = Vector2.up,
+                Speed = 500f,
+                IsPlayerBullet = true
+            };
+            
+            BulletPool.Instance.GetBullet(_bulletSpawnPoint.position, movementData);
+        }
     }
     
     public void TakeDamage()
