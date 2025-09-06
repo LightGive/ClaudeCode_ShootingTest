@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class Player : MonoBehaviour
 {
@@ -18,41 +19,39 @@ public class Player : MonoBehaviour
         
     }
     
-void Start()
+    void Start()
     {
         _remainingLives = 3;
-        _normalSpeed = 5f;
-        _slowSpeed = 2f;
     }
     
-void Update()
+    void Update()
     {
         HandleInput();
         Move();
     }
     
-void HandleInput()
+    void HandleInput()
     {
-        _isSlowMode = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
+        _isSlowMode = Keyboard.current.leftShiftKey.isPressed || Keyboard.current.rightShiftKey.isPressed;
     }
     
-void Move()
+    void Move()
     {
         Vector3 movement = Vector3.zero;
         
-        if (Input.GetKey(KeyCode.LeftArrow))
+        if (Keyboard.current.leftArrowKey.isPressed)
         {
             movement.x = -1f;
         }
-        if (Input.GetKey(KeyCode.RightArrow))
+        if (Keyboard.current.rightArrowKey.isPressed)
         {
             movement.x = 1f;
         }
-        if (Input.GetKey(KeyCode.UpArrow))
+        if (Keyboard.current.upArrowKey.isPressed)
         {
             movement.y = 1f;
         }
-        if (Input.GetKey(KeyCode.DownArrow))
+        if (Keyboard.current.downArrowKey.isPressed)
         {
             movement.y = -1f;
         }
