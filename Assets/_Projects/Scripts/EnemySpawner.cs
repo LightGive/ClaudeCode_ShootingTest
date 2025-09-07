@@ -61,23 +61,67 @@ public class EnemySpawner : MonoBehaviour
     
     IEnumerator SpawnWaveCoroutine(EnemyWave wave)
     {
+#if UNITY_EDITOR
         Debug.Log($"Starting wave: {wave.WaveName}");
+#endif
         
-        // 敵を順次生成
-        foreach (var spawnData in wave.EnemySpawns)
-        {
-            yield return new WaitForSeconds(spawnData.SpawnDelay);
-            SpawnEnemy(spawnData);
-        }
+        // SpawnDelay順にソートした配列を作成
+        var sortedSpawns = new EnemySpawnData[wave.EnemySpawns.Length];
+        System.Array.Copy(wave.EnemySpawns, sortedSpawns, wave.EnemySpawns.Length);
+        System.Array.Sort(sortedSpawns, (a, b) => a.SpawnDelay.CompareTo(b.SpawnDelay));
         
-        // ウェーブ完了条件を待機
-        if (wave.WaitForAllEnemiesDestroyed)
+        float waveStartTime = Time.time;
+        int spawnIndex = 0;
+        bool allEnemiesSpawned = false;
+        
+        // ウェーブ完了まで継続的にチェック
+        while (true)
         {
-            yield return new WaitUntil(() => _activeEnemies.Count == 0);
-        }
-        else
-        {
-            yield return new WaitForSeconds(wave.WaveDuration);
+            float elapsedTime = Time.time - waveStartTime;
+            
+            // まだ出現していない敵をチェック
+            if (!allEnemiesSpawned)
+            {
+                // 出現時間が来た敵を全て生成
+                while (spawnIndex < sortedSpawns.Length && sortedSpawns[spawnIndex].SpawnDelay <= elapsedTime)
+                {
+                    SpawnEnemy(sortedSpawns[spawnIndex]);
+                    spawnIndex++;
+                }
+                
+                // 全ての敵が出現完了したかチェック
+                if (spawnIndex >= sortedSpawns.Length)
+                {
+                    allEnemiesSpawned = true;
+#if UNITY_EDITOR
+                    Debug.Log("All enemies spawned");
+#endif
+                }
+            }
+            
+            // ウェーブ完了条件をチェック
+            bool waveCompleted = false;
+            
+            if (wave.WaitForAllEnemiesDestroyed)
+            {
+                // 全敵撃破待ち
+                waveCompleted = allEnemiesSpawned && _activeEnemies.Count == 0;
+            }
+            else
+            {
+                // 時間経過待ち（ウェーブ開始からの総時間）
+                waveCompleted = elapsedTime >= wave.WaveDuration;
+            }
+            
+            if (waveCompleted)
+                    {
+#if UNITY_EDITOR
+                Debug.Log($"Wave completed after {elapsedTime:F1} seconds");
+#endif
+                break;
+            }
+            
+            yield return null; // 次フレームまで待機
         }
         
         // ウェーブクリア処理
@@ -99,13 +143,10 @@ public class EnemySpawner : MonoBehaviour
         if (enemy != null)
         {
             // 敵の初期化
-            if (enemy is NormalEnemy normalEnemy)
-            {
-                normalEnemy.Initialize(spawnData);
-            }
+            enemy.Initialize(spawnData);
             
             _activeEnemies.Add(enemy);
-            enemy.OnDestroyed += () => OnEnemyDestroyed(enemy);
+            enemy.OnDestroyed += OnEnemyDestroyed;
         }
     }
     
@@ -119,7 +160,9 @@ public class EnemySpawner : MonoBehaviour
         _isWaveActive = false;
         OnWaveCompleted?.Invoke();
         
+#if UNITY_EDITOR
         Debug.Log($"Wave {_currentWaveIndex + 1} completed!");
+#endif
         
         // 次のウェーブを開始
         if (_autoStartWaves)

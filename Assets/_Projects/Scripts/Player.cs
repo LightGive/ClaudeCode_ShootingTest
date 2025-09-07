@@ -6,7 +6,8 @@ public class Player : MonoBehaviour
     [SerializeField] float _normalSpeed;
     [SerializeField] float _slowSpeed;
     
-    [SerializeField] Transform _bulletSpawnPoint;
+        [SerializeField] GameSettings _gameSettings;
+[SerializeField] Transform _bulletSpawnPoint;
     [SerializeField] float _bulletFireRate;
     
     int _remainingLives;
@@ -78,8 +79,17 @@ public class Player : MonoBehaviour
         
         // 画面端での移動制限（プレイエリア: 1152*1080、ピクセル=1m）
         Vector3 pos = transform.position;
-        pos.x = Mathf.Clamp(pos.x, -576f, 576f); // プレイエリア幅1152の半分
-        pos.y = Mathf.Clamp(pos.y, -540f, 540f); // プレイエリア高1080の半分
+        // ゲーム設定がある場合はそれを使用、ない場合はデフォルト値
+        if (_gameSettings != null)
+        {
+            pos.x = Mathf.Clamp(pos.x, -_gameSettings.PlayAreaWidth / 2f, _gameSettings.PlayAreaWidth / 2f);
+            pos.y = Mathf.Clamp(pos.y, -_gameSettings.PlayAreaHeight / 2f, _gameSettings.PlayAreaHeight / 2f);
+        }
+        else
+        {
+            pos.x = Mathf.Clamp(pos.x, -576f, 576f); // フォールバック値
+            pos.y = Mathf.Clamp(pos.y, -540f, 540f);
+        }
         transform.position = pos;
     }
     

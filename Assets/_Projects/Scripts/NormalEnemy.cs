@@ -3,10 +3,11 @@ using UnityEngine;
 public class NormalEnemy : Enemy
 {
     [SerializeField] Vector2 _moveDirection;
+    [SerializeField] GameSettings _gameSettings;
     [SerializeField] float _fireRate;
     
-        EnemySpawnData _spawnData;
-float _nextFireTime;
+    EnemySpawnData _spawnData;
+    float _nextFireTime;
     
     void Awake()
     {
@@ -18,7 +19,7 @@ float _nextFireTime;
         // Initialize()で設定するようにしたため、ここでは何もしない
     }
 
-    public void Initialize(EnemySpawnData spawnData)
+    public override void Initialize(EnemySpawnData spawnData)
     {
         _spawnData = spawnData;
         _moveDirection = spawnData.MoveDirection;
@@ -26,20 +27,21 @@ float _nextFireTime;
         _fireRate = spawnData.FireRate;
         _nextFireTime = Time.time + spawnData.FireDelay;
         
-        // Healthをここで初期化
-        _health = 1;
+        // HealthをspawnDataから設定
+        _health = spawnData.Health;
     }
 
-    
     protected override void Move()
     {
         transform.position += (Vector3)(_moveDirection * _moveSpeed * Time.deltaTime);
         
         // 画面外判定
         Vector3 pos = transform.position;
-        if (pos.x < -700f || pos.x > 700f || pos.y < -700f || pos.y > 700f)
+        if (_gameSettings != null && 
+            (pos.x < _gameSettings.LeftBoundary || pos.x > _gameSettings.RightBoundary || 
+             pos.y < _gameSettings.BottomBoundary || pos.y > _gameSettings.TopBoundary))
         {
-            OnDestroyed?.Invoke();
+            TriggerOnDestroyed();
             Destroy(gameObject);
         }
     }
@@ -47,7 +49,9 @@ float _nextFireTime;
     protected override void Attack()
     {
         if (_spawnData == null || _spawnData.BulletPatterns == null || _spawnData.BulletPatterns.Length == 0)
+        {
             return;
+        }
             
         if (Time.time >= _nextFireTime)
         {
@@ -59,29 +63,11 @@ float _nextFireTime;
         }
     }
     
-    public override void TakeDamage(int damage)
-    {
-        Debug.Log($"NormalEnemy TakeDamage called. Before: Health={_health}, Damage={damage}, IsDead={_isDead}");
-        
-        if (_isDead)
-        {
-            Debug.Log("Enemy is already dead, skipping damage");
-            return;
-        }
-        
-        _health -= damage;
-        Debug.Log($"After damage: Health={_health}");
-        
-        if (_health <= 0)
-        {
-            Debug.Log("Health <= 0, calling Die()");
-            Die();
-        }
-    }
-    
     protected override void Die()
     {
+#if UNITY_EDITOR
         Debug.Log("NormalEnemy Die() called, calling base.Die()");
+#endif
         base.Die();
     }
 }

@@ -23,13 +23,17 @@ public class EnemyWave : ScriptableObject
     public float GetMaxSpawnTime()
     {
         if (EnemySpawns == null || EnemySpawns.Length == 0)
+        {
             return 0f;
+        }
             
         float maxTime = 0f;
         foreach (var spawn in EnemySpawns)
         {
             if (spawn.SpawnDelay > maxTime)
+            {
                 maxTime = spawn.SpawnDelay;
+            }
         }
         return maxTime;
     }

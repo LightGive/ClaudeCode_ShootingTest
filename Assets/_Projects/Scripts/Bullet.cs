@@ -6,7 +6,8 @@ public class Bullet : MonoBehaviour
     [SerializeField] Vector2 _direction;
     [SerializeField] int _damage;
         [SerializeField] bool _hasHit = false;
-    [SerializeField] bool _isPlayerBullet;
+        [SerializeField] GameSettings _gameSettings;
+[SerializeField] bool _isPlayerBullet;
     
     void Awake()
     {
@@ -34,7 +35,9 @@ public class Bullet : MonoBehaviour
         Vector3 pos = transform.position;
         
         // 画面外判定（プレイエリア + マージン）
-        if (pos.x < -600f || pos.x > 600f || pos.y < -600f || pos.y > 600f)
+        if (_gameSettings != null && 
+            (pos.x < _gameSettings.BulletLeftBoundary || pos.x > _gameSettings.BulletRightBoundary || 
+             pos.y < _gameSettings.BulletBottomBoundary || pos.y > _gameSettings.BulletTopBoundary))
         {
             BulletPool.Instance.ReturnBullet(this);
         }
@@ -49,25 +52,31 @@ public class Bullet : MonoBehaviour
         _hasHit = false; // ヒットフラグをリセット
     }
     
-    void OnTriggerEnter2D(Collider2D other)
+void OnTriggerEnter2D(Collider2D other)
     {
         if (_hasHit) return; // 既にヒットしている場合は処理しない
         
+#if UNITY_EDITOR
         Debug.Log($"Bullet collision with: {other.gameObject.name}, IsPlayerBullet: {_isPlayerBullet}");
+#endif
+        
+        bool shouldDestroy = false;
         
         // プレイヤーの弾の場合
         if (_isPlayerBullet)
         {
             // 敵との当たり判定
             var enemy = other.GetComponent<Enemy>();
+#if UNITY_EDITOR
             Debug.Log($"Enemy component found: {enemy != null}");
+#endif
             if (enemy != null)
             {
-                _hasHit = true; // ヒットフラグをセット
+#if UNITY_EDITOR
                 Debug.Log($"Calling TakeDamage with damage: {_damage}");
+#endif
                 enemy.TakeDamage(_damage);
-                DestroyBullet();
-                return;
+                shouldDestroy = true;
             }
         }
         // 敵の弾の場合
@@ -77,11 +86,16 @@ public class Bullet : MonoBehaviour
             Player player = other.GetComponentInParent<Player>();
             if (player != null)
             {
-                _hasHit = true; // ヒットフラグをセット
                 player.TakeDamage();
-                DestroyBullet();
-                return;
+                shouldDestroy = true;
             }
+        }
+        
+        // 当たった場合の共通処理
+        if (shouldDestroy)
+        {
+            _hasHit = true;
+            DestroyBullet();
         }
     }
     

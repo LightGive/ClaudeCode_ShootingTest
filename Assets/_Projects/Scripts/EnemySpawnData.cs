@@ -4,7 +4,8 @@ using UnityEngine;
 public class EnemySpawnData
 {
     [Header("敵情報")]
-    public GameObject EnemyPrefab;
+        public int Health;
+public GameObject EnemyPrefab;
     public Vector3 SpawnPosition;
     public float SpawnDelay;
     
@@ -19,6 +20,7 @@ public class EnemySpawnData
     
     public EnemySpawnData()
     {
+        Health = 1;
         SpawnPosition = Vector3.zero;
         SpawnDelay = 0f;
         MoveDirection = Vector2.down;
