@@ -16,6 +16,9 @@ public class EnemySpawner : MonoBehaviour
     bool _isWaveActive;
     HashSet<Enemy> _activeEnemies = new HashSet<Enemy>();
     
+    // ソート結果キャッシュ（パフォーマンス最適化）
+    Dictionary<EnemyWave, EnemySpawnData[]> _sortedSpawnCache = new Dictionary<EnemyWave, EnemySpawnData[]>();
+    
     public System.Action OnWaveCompleted;
     public System.Action OnAllWavesCompleted;
     
@@ -66,8 +69,25 @@ public class EnemySpawner : MonoBehaviour
         Debug.Log($"Starting wave: {wave.WaveName}");
 #endif
         
-        // SpawnDelay順にソートされた配列をLINQで作成（最適化）
-        var sortedSpawns = wave.EnemySpawns.OrderBy(s => s.SpawnDelay).ToArray();
+        // キャッシュされたソート結果を取得または初回ソート実行
+        EnemySpawnData[] sortedSpawns;
+        if (_sortedSpawnCache.ContainsKey(wave))
+        {
+            // キャッシュから取得（O(1)）
+            sortedSpawns = _sortedSpawnCache[wave];
+#if UNITY_EDITOR
+            Debug.Log($"Using cached sorted spawn data for wave: {wave.WaveName}");
+#endif
+        }
+        else
+        {
+            // 初回のみソートしてキャッシュに保存
+            sortedSpawns = wave.EnemySpawns.OrderBy(s => s.SpawnDelay).ToArray();
+            _sortedSpawnCache[wave] = sortedSpawns;
+#if UNITY_EDITOR
+            Debug.Log($"Sorted and cached spawn data for wave: {wave.WaveName}");
+#endif
+        }
         
         float waveStartTime = Time.time;
         int spawnIndex = 0;
