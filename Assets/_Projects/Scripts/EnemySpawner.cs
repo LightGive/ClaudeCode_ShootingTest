@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 public class EnemySpawner : MonoBehaviour
 {
@@ -65,10 +66,8 @@ public class EnemySpawner : MonoBehaviour
         Debug.Log($"Starting wave: {wave.WaveName}");
 #endif
         
-        // SpawnDelay順にソートした配列を作成
-        var sortedSpawns = new EnemySpawnData[wave.EnemySpawns.Length];
-        System.Array.Copy(wave.EnemySpawns, sortedSpawns, wave.EnemySpawns.Length);
-        System.Array.Sort(sortedSpawns, (a, b) => a.SpawnDelay.CompareTo(b.SpawnDelay));
+        // SpawnDelay順にソートされた配列をLINQで作成（最適化）
+        var sortedSpawns = wave.EnemySpawns.OrderBy(s => s.SpawnDelay).ToArray();
         
         float waveStartTime = Time.time;
         int spawnIndex = 0;
@@ -114,7 +113,7 @@ public class EnemySpawner : MonoBehaviour
             }
             
             if (waveCompleted)
-                    {
+            {
 #if UNITY_EDITOR
                 Debug.Log($"Wave completed after {elapsedTime:F1} seconds");
 #endif

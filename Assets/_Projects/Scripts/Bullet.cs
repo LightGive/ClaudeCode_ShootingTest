@@ -82,7 +82,7 @@ public class Bullet : MonoBehaviour
         if (_isPlayerBullet)
         {
             // 敵との当たり判定
-            var enemy = other.GetComponent<Enemy>();
+            var enemy = other.GetComponentInParent<Enemy>();
 #if UNITY_EDITOR
             Debug.Log($"Enemy component found: {enemy != null}");
 #endif
@@ -102,7 +102,7 @@ public class Bullet : MonoBehaviour
             Player player = other.GetComponentInParent<Player>();
             if (player != null)
             {
-                player.TakeDamage();
+                player.TakeDamage(_damage);
                 shouldDestroy = true;
             }
         }

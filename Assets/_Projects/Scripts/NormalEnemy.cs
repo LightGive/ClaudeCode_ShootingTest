@@ -41,9 +41,37 @@ public class NormalEnemy : Enemy
             (pos.x < _gameSettings.LeftBoundary || pos.x > _gameSettings.RightBoundary || 
              pos.y < _gameSettings.BottomBoundary || pos.y > _gameSettings.TopBoundary))
         {
-            TriggerOnDestroyed();
-            Destroy(gameObject);
+            // 画面外ではアイテムドロップなしで安全に破棄
+            OutOfBoundsDie();
         }
+    }
+
+    void OutOfBoundsDie()
+    {
+        // 画面外での破棄はアイテムドロップを行わない
+        if (_isDead)
+        {
+            return;
+        }
+        
+        _isDead = true;
+        
+        // イベントを発行（オブジェクトがまだ有効な状態）
+        TriggerOnDestroyed();
+        
+        // オブジェクトの破棄を次フレームに遅らせて安全性を向上
+        StartCoroutine(OutOfBoundsDestroyNextFrame());
+    }
+
+    System.Collections.IEnumerator OutOfBoundsDestroyNextFrame()
+    {
+        // 次フレームまで待機してから破棄
+        yield return null;
+        
+#if UNITY_EDITOR
+        Debug.Log($"Destroying out-of-bounds {gameObject.name}");
+#endif
+        Destroy(gameObject);
     }
     
     protected override void Attack()

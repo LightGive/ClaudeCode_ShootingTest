@@ -106,10 +106,35 @@ public class Player : MonoBehaviour
         }
     }
     
-    public void TakeDamage()
+    public void TakeDamage(int damage)
     {
+        if (_remainingLives <= 0)
+        {
+            return; // すでにゲームオーバー状態
+        }
         
+        _remainingLives -= damage;
+        
+#if UNITY_EDITOR
+        Debug.Log($"Player took {damage} damage. Remaining lives: {_remainingLives}");
+#endif
+        
+        if (_remainingLives <= 0)
+        {
+            Die();
+        }
     }
+
+    void Die()
+    {
+#if UNITY_EDITOR
+        Debug.Log("Player died!");
+#endif
+        // TODO: ゲームオーバー処理を実装
+        // 一時的にオブジェクトを非アクティブ化
+        gameObject.SetActive(false);
+    }
+
     
     public void AddLife()
     {
@@ -118,7 +143,7 @@ public class Player : MonoBehaviour
     
     public int GetRemainingLives()
     {
-        return 0;
+        return _remainingLives;
     }
     
     void OnTriggerEnter2D(Collider2D other)

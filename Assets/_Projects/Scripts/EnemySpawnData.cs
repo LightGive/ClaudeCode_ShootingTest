@@ -4,8 +4,8 @@ using UnityEngine;
 public class EnemySpawnData
 {
     [Header("敵情報")]
-        public int Health;
-public GameObject EnemyPrefab;
+    public int Health;
+    public GameObject EnemyPrefab;
     public Vector3 SpawnPosition;
     public float SpawnDelay;
     
