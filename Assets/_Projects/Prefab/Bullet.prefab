@@ -49,7 +49,9 @@ MonoBehaviour:
   _speed: 0
   _direction: {x: 0, y: 0}
   _damage: 0
+  _hasHit: 0
   _isPlayerBullet: 0
+  _gameSettings: {fileID: 11400000, guid: afeb5aad7d2dc78459d7cdd219b80eca, type: 2}
 --- !u!50 &6494245663160025482
 Rigidbody2D:
   serializedVersion: 5

@@ -6,8 +6,8 @@ public class Player : MonoBehaviour
     [SerializeField] float _normalSpeed;
     [SerializeField] float _slowSpeed;
     
-        [SerializeField] GameSettings _gameSettings;
-[SerializeField] Transform _bulletSpawnPoint;
+    [SerializeField] GameSettings _gameSettings;
+    [SerializeField] Transform _bulletSpawnPoint;
     [SerializeField] float _bulletFireRate;
     
     int _remainingLives;
@@ -17,7 +17,11 @@ public class Player : MonoBehaviour
     
     void Awake()
     {
-        
+        // GameSettingsが未設定の場合はエラーを出して明確に通知
+        if (_gameSettings == null)
+        {
+            Debug.LogError($"GameSettings is not assigned to Player. Please assign GameSettings in the inspector.", this);
+        }
     }
     
     void Start()
@@ -77,20 +81,14 @@ public class Player : MonoBehaviour
         float currentSpeed = _isSlowMode ? _slowSpeed : _normalSpeed;
         transform.position += movement.normalized * currentSpeed * Time.deltaTime;
         
-        // 画面端での移動制限（プレイエリア: 1152*1080、ピクセル=1m）
-        Vector3 pos = transform.position;
-        // ゲーム設定がある場合はそれを使用、ない場合はデフォルト値
+        // 画面端での移動制限（GameSettingsを使用）
         if (_gameSettings != null)
         {
+            Vector3 pos = transform.position;
             pos.x = Mathf.Clamp(pos.x, -_gameSettings.PlayAreaWidth / 2f, _gameSettings.PlayAreaWidth / 2f);
             pos.y = Mathf.Clamp(pos.y, -_gameSettings.PlayAreaHeight / 2f, _gameSettings.PlayAreaHeight / 2f);
+            transform.position = pos;
         }
-        else
-        {
-            pos.x = Mathf.Clamp(pos.x, -576f, 576f); // フォールバック値
-            pos.y = Mathf.Clamp(pos.y, -540f, 540f);
-        }
-        transform.position = pos;
     }
     
     void Fire()

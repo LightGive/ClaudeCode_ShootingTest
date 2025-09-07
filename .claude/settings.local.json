@@ -8,7 +8,11 @@
       "mcp__UnityMCP__manage_gameobject",
       "mcp__UnityMCP__manage_shader",
       "mcp__UnityMCP__manage_asset",
-      "mcp__UnityMCP__create_script"
+      "mcp__UnityMCP__create_script",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "mcp__UnityMCP__validate_script",
+      "mcp__UnityMCP__execute_menu_item"
     ],
     "deny": [],
     "ask": []

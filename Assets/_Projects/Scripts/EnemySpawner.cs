@@ -153,6 +153,12 @@ public class EnemySpawner : MonoBehaviour
     void OnEnemyDestroyed(Enemy enemy)
     {
         _activeEnemies.Remove(enemy);
+        
+        // イベント登録解除してメモリリークを防止
+        if (enemy != null)
+        {
+            enemy.OnDestroyed -= OnEnemyDestroyed;
+        }
     }
     
     void CompleteWave()
@@ -184,5 +190,19 @@ public class EnemySpawner : MonoBehaviour
     public int GetActiveEnemyCount()
     {
         return _activeEnemies.Count;
+    }
+
+
+    void OnDestroy()
+    {
+        // Spawnerが破棄される際に、残存する敵のイベント登録を全て解除
+        foreach (Enemy enemy in _activeEnemies)
+        {
+            if (enemy != null)
+            {
+                enemy.OnDestroyed -= OnEnemyDestroyed;
+            }
+        }
+        _activeEnemies.Clear();
     }
 }

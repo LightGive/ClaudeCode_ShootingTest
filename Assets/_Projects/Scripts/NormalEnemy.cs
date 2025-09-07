@@ -52,6 +52,12 @@ public class NormalEnemy : Enemy
         {
             return;
         }
+        
+        // _fireRateが0の場合は攻撃しない（ゼロ除算を防止）
+        if (_fireRate <= 0f)
+        {
+            return;
+        }
             
         if (Time.time >= _nextFireTime)
         {

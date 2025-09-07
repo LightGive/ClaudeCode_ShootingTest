@@ -732,6 +732,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _normalSpeed: 300
   _slowSpeed: 100
+  _gameSettings: {fileID: 11400000, guid: afeb5aad7d2dc78459d7cdd219b80eca, type: 2}
   _bulletSpawnPoint: {fileID: 1059495642}
   _bulletFireRate: 10
 --- !u!1 &1059495641

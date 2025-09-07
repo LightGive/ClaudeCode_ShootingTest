@@ -86,18 +86,17 @@ public abstract class Enemy : MonoBehaviour
         Debug.Log("DropLifeItem() called");
 #endif
         
+        // イベントを発行（オブジェクトがまだ有効な状態）
 #if UNITY_EDITOR
         Debug.Log("Invoking OnDestroyed event");
 #endif
         OnDestroyed?.Invoke(this);
         
+        // オブジェクトの破棄を次フレームに遅らせて安全性を向上
 #if UNITY_EDITOR
-        Debug.Log($"Calling Destroy() on {gameObject.name}");
+        Debug.Log($"Scheduling destruction of {gameObject.name}");
 #endif
-        Destroy(gameObject);
-#if UNITY_EDITOR
-        Debug.Log("Destroy() called");
-#endif
+        StartCoroutine(DestroyNextFrame());
     }
     
     protected void DropLifeItem()
@@ -119,6 +118,17 @@ public abstract class Enemy : MonoBehaviour
             Debug.Log("No life item drop");
 #endif
         }
+    }
+    
+    System.Collections.IEnumerator DestroyNextFrame()
+    {
+        // 次フレームまで待機してから破棄
+        yield return null;
+        
+#if UNITY_EDITOR
+        Debug.Log($"Destroying {gameObject.name}");
+#endif
+        Destroy(gameObject);
     }
     
     void OnTriggerEnter2D(Collider2D other)
