@@ -72,38 +72,36 @@ public class Bullet : MonoBehaviour
     {
         if (_hasHit) return; // 既にヒットしている場合は処理しない
         
-#if UNITY_EDITOR
-        Debug.Log($"Bullet collision with: {other.gameObject.name}, IsPlayerBullet: {_isPlayerBullet}");
-#endif
-        
         bool shouldDestroy = false;
         
         // プレイヤーの弾の場合
         if (_isPlayerBullet)
         {
-            // 敵との当たり判定
-            var enemy = other.GetComponentInParent<Enemy>();
-#if UNITY_EDITOR
-            Debug.Log($"Enemy component found: {enemy != null}");
-#endif
-            if (enemy != null)
+            // タグで事前フィルタリング（パフォーマンス最適化）
+            if (other.CompareTag("Enemy"))
             {
-#if UNITY_EDITOR
-                Debug.Log($"Calling TakeDamage with damage: {_damage}");
-#endif
-                enemy.TakeDamage(_damage);
-                shouldDestroy = true;
+                // 敵との当たり判定
+                var enemy = other.GetComponentInParent<Enemy>();
+                if (enemy != null)
+                {
+                    enemy.TakeDamage(_damage);
+                    shouldDestroy = true;
+                }
             }
         }
         // 敵の弾の場合
         else
         {
-            // プレイヤーとの当たり判定
-            Player player = other.GetComponentInParent<Player>();
-            if (player != null)
+            // タグで事前フィルタリング（パフォーマンス最適化）
+            if (other.CompareTag("Player"))
             {
-                player.TakeDamage(_damage);
-                shouldDestroy = true;
+                // プレイヤーとの当たり判定
+                Player player = other.GetComponentInParent<Player>();
+                if (player != null)
+                {
+                    player.TakeDamage(_damage);
+                    shouldDestroy = true;
+                }
             }
         }
         

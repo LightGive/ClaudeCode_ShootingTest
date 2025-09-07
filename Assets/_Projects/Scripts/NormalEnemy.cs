@@ -71,9 +71,6 @@ public class NormalEnemy : Enemy
     
     protected override void Die(bool shouldDropItem = true)
     {
-#if UNITY_EDITOR
-        Debug.Log("NormalEnemy Die() called, calling base.Die()");
-#endif
         base.Die(shouldDropItem);
     }
 }
