@@ -3,8 +3,6 @@ using UnityEngine.InputSystem;
 
 public class Player : MonoBehaviour
 {
-    
-    
     [SerializeField] GameSettings _gameSettings;
     [SerializeField] Transform _bulletSpawnPoint;
     [SerializeField] float _bulletFireRate;
@@ -89,7 +87,7 @@ public class Player : MonoBehaviour
             movement.y = GameConstants.Input.NEGATIVE_MOVE_INPUT_VALUE;
         }
         
-        if (_rigidbody2D != null && movement != Vector3.zero)
+        if (movement != Vector3.zero)
         {
             float currentSpeed = _gameSettings != null ? 
                 (_isSlowMode ? _gameSettings.PlayerSlowSpeed : _gameSettings.PlayerNormalSpeed) :

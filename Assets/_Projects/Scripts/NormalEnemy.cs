@@ -45,7 +45,7 @@ public class NormalEnemy : Enemy
 
     protected override void Move()
     {
-        Vector3 newPosition = _rigidbody2D.position + (Vector2)(_moveDirection * _moveSpeed * Time.fixedDeltaTime);
+        Vector2 newPosition = _rigidbody2D.position + (_moveDirection * _moveSpeed * Time.fixedDeltaTime);
         _rigidbody2D.MovePosition(newPosition);
         
         // 画面外判定

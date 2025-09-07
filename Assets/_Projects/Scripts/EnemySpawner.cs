@@ -207,13 +207,11 @@ public class EnemySpawner : MonoBehaviour
     {
         return _activeEnemies.Count;
     }
-
-
+    
     void OnDestroy()
     {
         // Spawnerが破棄される際に、残存する敵のイベント登録を全て解除
-        // コレクションのコピーを作成して安全にループ処理
-        foreach (Enemy enemy in _activeEnemies.ToList())
+        foreach (Enemy enemy in _activeEnemies)
         {
             if (enemy != null)
             {
