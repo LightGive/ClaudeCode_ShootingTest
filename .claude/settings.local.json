@@ -14,7 +14,8 @@
       "mcp__UnityMCP__validate_script",
       "mcp__UnityMCP__execute_menu_item",
       "mcp__UnityMCP__manage_editor",
-      "mcp__UnityMCP__list_resources"
+      "mcp__UnityMCP__list_resources",
+      "Bash(timeout:*)"
     ],
     "deny": [],
     "ask": []
