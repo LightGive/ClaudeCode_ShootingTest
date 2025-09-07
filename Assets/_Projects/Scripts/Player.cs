@@ -3,8 +3,7 @@ using UnityEngine.InputSystem;
 
 public class Player : MonoBehaviour
 {
-    [SerializeField] float _normalSpeed;
-    [SerializeField] float _slowSpeed;
+    
     
     [SerializeField] GameSettings _gameSettings;
     [SerializeField] Transform _bulletSpawnPoint;
@@ -92,7 +91,9 @@ public class Player : MonoBehaviour
         
         if (_rigidbody2D != null && movement != Vector3.zero)
         {
-            float currentSpeed = _isSlowMode ? _slowSpeed : _normalSpeed;
+            float currentSpeed = _gameSettings != null ? 
+                (_isSlowMode ? _gameSettings.PlayerSlowSpeed : _gameSettings.PlayerNormalSpeed) :
+                (_isSlowMode ? GameConstants.Defaults.PLAYER_SLOW_SPEED : GameConstants.Defaults.PLAYER_NORMAL_SPEED);
             Vector3 newPosition = _rigidbody2D.position + (Vector2)(movement.normalized * currentSpeed * Time.fixedDeltaTime);
             
             // 画面端での移動制限（GameSettingsを使用）

@@ -72,18 +72,7 @@ public class Bullet : MonoBehaviour
     {
         if (_hasHit) return; // 既にヒットしている場合は処理しない
         
-        bool shouldDestroy = false;
-        
-        // プレイヤーの弾の場合
-        if (_isPlayerBullet)
-        {
-            shouldDestroy = HandleEnemyHit(other);
-        }
-        // 敵の弾の場合
-        else
-        {
-            shouldDestroy = HandlePlayerHit(other);
-        }
+        bool shouldDestroy = _isPlayerBullet ? HandleEnemyHit(other) : HandlePlayerHit(other);
         
         // 当たった場合の共通処理
         if (shouldDestroy)
