@@ -7,7 +7,7 @@ public class EnemySpawner : MonoBehaviour
 {
     [Header("ウェーブ設定")]
     [SerializeField] EnemyWave[] _enemyWaves;
-    [SerializeField] float _waveClearDelay = 2f;
+    [SerializeField] float _waveClearDelay = GameConstants.Defaults.WAVE_CLEAR_DELAY;
     
     [Header("デバッグ")]
     [SerializeField] bool _autoStartWaves = true;
@@ -174,10 +174,7 @@ public class EnemySpawner : MonoBehaviour
         _activeEnemies.Remove(enemy);
         
         // イベント登録解除してメモリリークを防止
-        if (enemy != null)
-        {
-            enemy.OnDestroyed -= OnEnemyDestroyed;
-        }
+        enemy.OnDestroyed -= OnEnemyDestroyed;
     }
     
     void CompleteWave()
@@ -217,10 +214,7 @@ public class EnemySpawner : MonoBehaviour
         // Spawnerが破棄される際に、残存する敵のイベント登録を全て解除
         foreach (Enemy enemy in _activeEnemies)
         {
-            if (enemy != null)
-            {
-                enemy.OnDestroyed -= OnEnemyDestroyed;
-            }
+            enemy.OnDestroyed -= OnEnemyDestroyed;
         }
         _activeEnemies.Clear();
     }

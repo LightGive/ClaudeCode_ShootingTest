@@ -50,7 +50,7 @@ public class Bullet : MonoBehaviour
         else
         {
             // フォールバック: デフォルト値を使用
-            isOutOfBounds = (pos.x < -650f || pos.x > 650f || pos.y < -650f || pos.y > 650f);
+            isOutOfBounds = (pos.x < GameConstants.Boundaries.DEFAULT_LEFT_BOUNDARY || pos.x > GameConstants.Boundaries.DEFAULT_RIGHT_BOUNDARY || pos.y < GameConstants.Boundaries.DEFAULT_BOTTOM_BOUNDARY || pos.y > GameConstants.Boundaries.DEFAULT_TOP_BOUNDARY);
         }
         
         if (isOutOfBounds)
@@ -77,32 +77,12 @@ public class Bullet : MonoBehaviour
         // プレイヤーの弾の場合
         if (_isPlayerBullet)
         {
-            // タグで事前フィルタリング（パフォーマンス最適化）
-            if (other.CompareTag("Enemy"))
-            {
-                // 敵との当たり判定
-                var enemy = other.GetComponentInParent<Enemy>();
-                if (enemy != null)
-                {
-                    enemy.TakeDamage(_damage);
-                    shouldDestroy = true;
-                }
-            }
+            shouldDestroy = HandleEnemyHit(other);
         }
         // 敵の弾の場合
         else
         {
-            // タグで事前フィルタリング（パフォーマンス最適化）
-            if (other.CompareTag("Player"))
-            {
-                // プレイヤーとの当たり判定
-                Player player = other.GetComponentInParent<Player>();
-                if (player != null)
-                {
-                    player.TakeDamage(_damage);
-                    shouldDestroy = true;
-                }
-            }
+            shouldDestroy = HandlePlayerHit(other);
         }
         
         // 当たった場合の共通処理
@@ -112,6 +92,40 @@ public class Bullet : MonoBehaviour
             DestroyBullet();
         }
     }
+
+    bool HandleEnemyHit(Collider2D other)
+    {
+        // タグで事前フィルタリング（パフォーマンス最適化）
+        if (!other.CompareTag(GameConstants.Tags.ENEMY)) return false;
+        
+        // 敵との当たり判定
+        var enemy = other.GetComponentInParent<Enemy>();
+        if (enemy != null)
+        {
+            enemy.TakeDamage(_damage);
+            return true;
+        }
+        
+        return false;
+    }
+
+    bool HandlePlayerHit(Collider2D other)
+    {
+        // タグで事前フィルタリング（パフォーマンス最適化）
+        if (!other.CompareTag(GameConstants.Tags.PLAYER)) return false;
+        
+        // プレイヤーとの当たり判定
+        var player = other.GetComponentInParent<Player>();
+        if (player != null)
+        {
+            player.TakeDamage(_damage);
+            return true;
+        }
+        
+        return false;
+    }
+
+
     
     void DestroyBullet()
     {

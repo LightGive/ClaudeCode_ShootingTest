@@ -26,12 +26,12 @@ public class Player : MonoBehaviour
     
     void Start()
     {
-        _remainingLives = 3;
+        _remainingLives = GameConstants.Defaults.DEFAULT_LIFE_COUNT;
         
         // デフォルト値を設定（Inspectorで設定しない場合）
         if (_bulletFireRate <= 0f)
         {
-            _bulletFireRate = 10f; // 秒間6発
+            _bulletFireRate = GameConstants.Defaults.DEFAULT_FIRE_RATE;
         }
     }
     
@@ -46,7 +46,7 @@ public class Player : MonoBehaviour
             if (Time.time >= _nextFireTime)
             {
                 Fire();
-                _nextFireTime = Time.time + (1f / _bulletFireRate);
+                _nextFireTime = Time.time + (GameConstants.Defaults.FIRE_INTERVAL_MULTIPLIER / _bulletFireRate);
             }
         }
     }
@@ -63,19 +63,19 @@ public class Player : MonoBehaviour
         
         if (Keyboard.current.leftArrowKey.isPressed)
         {
-            movement.x = -1f;
+            movement.x = GameConstants.Input.NEGATIVE_MOVE_INPUT_VALUE;
         }
         if (Keyboard.current.rightArrowKey.isPressed)
         {
-            movement.x = 1f;
+            movement.x = GameConstants.Input.MOVE_INPUT_VALUE;
         }
         if (Keyboard.current.upArrowKey.isPressed)
         {
-            movement.y = 1f;
+            movement.y = GameConstants.Input.MOVE_INPUT_VALUE;
         }
         if (Keyboard.current.downArrowKey.isPressed)
         {
-            movement.y = -1f;
+            movement.y = GameConstants.Input.NEGATIVE_MOVE_INPUT_VALUE;
         }
         
         float currentSpeed = _isSlowMode ? _slowSpeed : _normalSpeed;
@@ -85,8 +85,8 @@ public class Player : MonoBehaviour
         if (_gameSettings != null)
         {
             Vector3 pos = transform.position;
-            pos.x = Mathf.Clamp(pos.x, -_gameSettings.PlayAreaWidth / 2f, _gameSettings.PlayAreaWidth / 2f);
-            pos.y = Mathf.Clamp(pos.y, -_gameSettings.PlayAreaHeight / 2f, _gameSettings.PlayAreaHeight / 2f);
+            pos.x = Mathf.Clamp(pos.x, -_gameSettings.PlayAreaWidth / GameConstants.Boundaries.BOUNDARY_CALCULATION_DIVISOR, _gameSettings.PlayAreaWidth / GameConstants.Boundaries.BOUNDARY_CALCULATION_DIVISOR);
+            pos.y = Mathf.Clamp(pos.y, -_gameSettings.PlayAreaHeight / GameConstants.Boundaries.BOUNDARY_CALCULATION_DIVISOR, _gameSettings.PlayAreaHeight / GameConstants.Boundaries.BOUNDARY_CALCULATION_DIVISOR);
             transform.position = pos;
         }
     }
@@ -98,7 +98,7 @@ public class Player : MonoBehaviour
             BulletMovementData movementData = new BulletMovementData
             {
                 Direction = Vector2.up,
-                Speed = 500f,
+                Speed = GameConstants.Defaults.PLAYER_BULLET_SPEED,
                 IsPlayerBullet = true
             };
             
