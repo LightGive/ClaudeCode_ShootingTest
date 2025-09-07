@@ -46,7 +46,6 @@ public class Player : MonoBehaviour
     void Update()
     {
         HandleInput();
-        Move();
         
         // Zキーを押している間、連射する
         if (_isFiring)
@@ -57,6 +56,11 @@ public class Player : MonoBehaviour
                 _nextFireTime = Time.time + (GameConstants.Defaults.FIRE_INTERVAL_MULTIPLIER / _bulletFireRate);
             }
         }
+    }
+    
+    void FixedUpdate()
+    {
+        Move();
     }
     
     void HandleInput()
@@ -89,7 +93,7 @@ public class Player : MonoBehaviour
         if (_rigidbody2D != null && movement != Vector3.zero)
         {
             float currentSpeed = _isSlowMode ? _slowSpeed : _normalSpeed;
-            Vector3 newPosition = _rigidbody2D.position + (Vector2)(movement.normalized * currentSpeed * Time.deltaTime);
+            Vector3 newPosition = _rigidbody2D.position + (Vector2)(movement.normalized * currentSpeed * Time.fixedDeltaTime);
             
             // 画面端での移動制限（GameSettingsを使用）
             if (_gameSettings != null)
@@ -106,12 +110,11 @@ public class Player : MonoBehaviour
     {
         if (_bulletSpawnPoint != null)
         {
-            BulletMovementData movementData = new BulletMovementData
-            {
-                Direction = Vector2.up,
-                Speed = GameConstants.Defaults.PLAYER_BULLET_SPEED,
-                IsPlayerBullet = true
-            };
+            BulletMovementData movementData = new BulletMovementData(
+                Vector2.up, 
+                GameConstants.Defaults.PLAYER_BULLET_SPEED, 
+                true
+            );
             
             BulletPool.Instance.GetBullet(_bulletSpawnPoint.position, movementData);
         }

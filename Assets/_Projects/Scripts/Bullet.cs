@@ -124,8 +124,6 @@ public class Bullet : MonoBehaviour
         
         return false;
     }
-
-
     
     void DestroyBullet()
     {

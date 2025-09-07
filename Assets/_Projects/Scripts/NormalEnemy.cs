@@ -12,17 +12,18 @@ public class NormalEnemy : Enemy
     
     void Awake()
     {
+        // GameSettingsが未設定の場合の警告
+        if (_gameSettings == null)
+        {
+            Debug.LogWarning($"GameSettings is not assigned to NormalEnemy. Please assign GameSettings in the inspector.", this);
+        }
+        
         // Rigidbody2Dをキャッシュ
         _rigidbody2D = GetComponent<Rigidbody2D>();
         if (_rigidbody2D == null)
         {
             Debug.LogError($"Rigidbody2D component is required for NormalEnemy movement. Please add Rigidbody2D component.", this);
         }
-    }
-
-    void OldAwake()
-    {
-        
     }
     
     void Start()
@@ -46,7 +47,7 @@ public class NormalEnemy : Enemy
     {
         if (_rigidbody2D != null)
         {
-            Vector3 newPosition = _rigidbody2D.position + (Vector2)(_moveDirection * _moveSpeed * Time.deltaTime);
+            Vector3 newPosition = _rigidbody2D.position + (Vector2)(_moveDirection * _moveSpeed * Time.fixedDeltaTime);
             _rigidbody2D.MovePosition(newPosition);
         }
         

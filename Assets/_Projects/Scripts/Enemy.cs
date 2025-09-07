@@ -24,8 +24,15 @@ public abstract class Enemy : MonoBehaviour
     {
         if (!_isDead)
         {
-            Move();
             Attack();
+        }
+    }
+    
+    void FixedUpdate()
+    {
+        if (!_isDead)
+        {
+            Move();
         }
     }
     
