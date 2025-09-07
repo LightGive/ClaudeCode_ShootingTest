@@ -62,7 +62,7 @@ public abstract class Enemy : MonoBehaviour
         }
     }
     
-    protected virtual void Die()
+    protected virtual void Die(bool shouldDropItem = true)
     {
 #if UNITY_EDITOR
         Debug.Log($"Enemy Die() called for {gameObject.name}");
@@ -81,10 +81,14 @@ public abstract class Enemy : MonoBehaviour
         Debug.Log("Set _isDead = true");
 #endif
         
-        DropLifeItem();
+        // アイテムドロップ処理（必要な場合のみ）
+        if (shouldDropItem)
+        {
+            DropLifeItem();
 #if UNITY_EDITOR
-        Debug.Log("DropLifeItem() called");
+            Debug.Log("DropLifeItem() called");
 #endif
+        }
         
         // イベントを発行（オブジェクトがまだ有効な状態）
 #if UNITY_EDITOR

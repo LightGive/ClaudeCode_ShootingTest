@@ -14,7 +14,7 @@ public class EnemySpawner : MonoBehaviour
     
     int _currentWaveIndex;
     bool _isWaveActive;
-    List<Enemy> _activeEnemies = new List<Enemy>();
+    HashSet<Enemy> _activeEnemies = new HashSet<Enemy>();
     
     public System.Action OnWaveCompleted;
     public System.Action OnAllWavesCompleted;

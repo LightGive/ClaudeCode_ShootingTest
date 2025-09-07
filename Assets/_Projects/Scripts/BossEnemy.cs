@@ -44,9 +44,12 @@ public class BossEnemy : Enemy
         
     }
     
-    protected override void Die()
+    protected override void Die(bool shouldDropItem = true)
     {
-        
+#if UNITY_EDITOR
+        Debug.Log("BossEnemy Die() called, calling base.Die()");
+#endif
+        base.Die(shouldDropItem);
     }
     
     public float GetHealthPercentage()
