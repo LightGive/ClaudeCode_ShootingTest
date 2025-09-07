@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Linq;
 
 [CreateAssetMenu(fileName = "New Enemy Wave", menuName = "Shooting Game/Enemy Wave")]
 public class EnemyWave : ScriptableObject
@@ -26,15 +27,7 @@ public class EnemyWave : ScriptableObject
         {
             return 0f;
         }
-            
-        float maxTime = 0f;
-        foreach (var spawn in EnemySpawns)
-        {
-            if (spawn.SpawnDelay > maxTime)
-            {
-                maxTime = spawn.SpawnDelay;
-            }
-        }
-        return maxTime;
+        
+        return EnemySpawns.Max(spawn => spawn.SpawnDelay);
     }
 }

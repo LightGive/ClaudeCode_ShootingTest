@@ -8,8 +8,19 @@ public class NormalEnemy : Enemy
     
     EnemySpawnData _spawnData;
     float _nextFireTime;
+    Rigidbody2D _rigidbody2D;
     
     void Awake()
+    {
+        // Rigidbody2Dをキャッシュ
+        _rigidbody2D = GetComponent<Rigidbody2D>();
+        if (_rigidbody2D == null)
+        {
+            Debug.LogError($"Rigidbody2D component is required for NormalEnemy movement. Please add Rigidbody2D component.", this);
+        }
+    }
+
+    void OldAwake()
     {
         
     }
@@ -33,7 +44,11 @@ public class NormalEnemy : Enemy
 
     protected override void Move()
     {
-        transform.position += (Vector3)(_moveDirection * _moveSpeed * Time.deltaTime);
+        if (_rigidbody2D != null)
+        {
+            Vector3 newPosition = _rigidbody2D.position + (Vector2)(_moveDirection * _moveSpeed * Time.deltaTime);
+            _rigidbody2D.MovePosition(newPosition);
+        }
         
         // 画面外判定
         Vector3 pos = transform.position;
@@ -65,7 +80,7 @@ public class NormalEnemy : Enemy
             {
                 BulletPool.Instance.GetBullet(transform.position, bulletPattern);
             }
-            _nextFireTime = Time.time + (1f / _fireRate);
+            _nextFireTime = Time.time + (GameConstants.Defaults.FIRE_INTERVAL_MULTIPLIER / _fireRate);
         }
     }
     

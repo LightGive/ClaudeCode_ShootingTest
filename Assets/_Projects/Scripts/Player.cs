@@ -14,6 +14,7 @@ public class Player : MonoBehaviour
     bool _isSlowMode;
     bool _isFiring;
     float _nextFireTime;
+    Rigidbody2D _rigidbody2D;
     
     void Awake()
     {
@@ -21,6 +22,13 @@ public class Player : MonoBehaviour
         if (_gameSettings == null)
         {
             Debug.LogError($"GameSettings is not assigned to Player. Please assign GameSettings in the inspector.", this);
+        }
+        
+        // Rigidbody2Dをキャッシュ
+        _rigidbody2D = GetComponent<Rigidbody2D>();
+        if (_rigidbody2D == null)
+        {
+            Debug.LogError($"Rigidbody2D component is required for Player movement. Please add Rigidbody2D component.", this);
         }
     }
     
@@ -78,16 +86,19 @@ public class Player : MonoBehaviour
             movement.y = GameConstants.Input.NEGATIVE_MOVE_INPUT_VALUE;
         }
         
-        float currentSpeed = _isSlowMode ? _slowSpeed : _normalSpeed;
-        transform.position += movement.normalized * currentSpeed * Time.deltaTime;
-        
-        // 画面端での移動制限（GameSettingsを使用）
-        if (_gameSettings != null)
+        if (_rigidbody2D != null && movement != Vector3.zero)
         {
-            Vector3 pos = transform.position;
-            pos.x = Mathf.Clamp(pos.x, -_gameSettings.PlayAreaWidth / GameConstants.Boundaries.BOUNDARY_CALCULATION_DIVISOR, _gameSettings.PlayAreaWidth / GameConstants.Boundaries.BOUNDARY_CALCULATION_DIVISOR);
-            pos.y = Mathf.Clamp(pos.y, -_gameSettings.PlayAreaHeight / GameConstants.Boundaries.BOUNDARY_CALCULATION_DIVISOR, _gameSettings.PlayAreaHeight / GameConstants.Boundaries.BOUNDARY_CALCULATION_DIVISOR);
-            transform.position = pos;
+            float currentSpeed = _isSlowMode ? _slowSpeed : _normalSpeed;
+            Vector3 newPosition = _rigidbody2D.position + (Vector2)(movement.normalized * currentSpeed * Time.deltaTime);
+            
+            // 画面端での移動制限（GameSettingsを使用）
+            if (_gameSettings != null)
+            {
+                newPosition.x = Mathf.Clamp(newPosition.x, -_gameSettings.PlayAreaWidth / GameConstants.Boundaries.BOUNDARY_CALCULATION_DIVISOR, _gameSettings.PlayAreaWidth / GameConstants.Boundaries.BOUNDARY_CALCULATION_DIVISOR);
+                newPosition.y = Mathf.Clamp(newPosition.y, -_gameSettings.PlayAreaHeight / GameConstants.Boundaries.BOUNDARY_CALCULATION_DIVISOR, _gameSettings.PlayAreaHeight / GameConstants.Boundaries.BOUNDARY_CALCULATION_DIVISOR);
+            }
+            
+            _rigidbody2D.MovePosition(newPosition);
         }
     }
     
