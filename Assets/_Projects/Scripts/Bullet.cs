@@ -5,6 +5,7 @@ public class Bullet : MonoBehaviour
     [SerializeField] float _speed;
     [SerializeField] Vector2 _direction;
     [SerializeField] int _damage;
+        [SerializeField] bool _hasHit = false;
     [SerializeField] bool _isPlayerBullet;
     
     void Awake()
@@ -45,11 +46,43 @@ public class Bullet : MonoBehaviour
         _speed = speed;
         _damage = damage;
         _isPlayerBullet = isPlayerBullet;
+        _hasHit = false; // ヒットフラグをリセット
     }
     
     void OnTriggerEnter2D(Collider2D other)
     {
+        if (_hasHit) return; // 既にヒットしている場合は処理しない
         
+        Debug.Log($"Bullet collision with: {other.gameObject.name}, IsPlayerBullet: {_isPlayerBullet}");
+        
+        // プレイヤーの弾の場合
+        if (_isPlayerBullet)
+        {
+            // 敵との当たり判定
+            var enemy = other.GetComponent<Enemy>();
+            Debug.Log($"Enemy component found: {enemy != null}");
+            if (enemy != null)
+            {
+                _hasHit = true; // ヒットフラグをセット
+                Debug.Log($"Calling TakeDamage with damage: {_damage}");
+                enemy.TakeDamage(_damage);
+                DestroyBullet();
+                return;
+            }
+        }
+        // 敵の弾の場合
+        else
+        {
+            // プレイヤーとの当たり判定
+            Player player = other.GetComponentInParent<Player>();
+            if (player != null)
+            {
+                _hasHit = true; // ヒットフラグをセット
+                player.TakeDamage();
+                DestroyBullet();
+                return;
+            }
+        }
     }
     
     void DestroyBullet()
