@@ -19,21 +19,6 @@ public class GameManager : MonoBehaviour
         GameClear
     }
     
-    void Awake()
-    {
-        
-    }
-    
-    void Start()
-    {
-        
-    }
-    
-    void Update()
-    {
-        
-    }
-    
     public void StartGame()
     {
         

@@ -44,9 +44,9 @@ public class BossEnemy : Enemy
         
     }
     
-    protected override void Die()
+    protected override void Die(bool shouldDropItem = true)
     {
-        
+        base.Die(shouldDropItem);
     }
     
     public float GetHealthPercentage()

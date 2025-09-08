@@ -4,8 +4,8 @@ using UnityEngine.Pool;
 public class BulletPool : MonoBehaviour
 {
     [SerializeField] Bullet _bulletPrefab;
-    [SerializeField] int _defaultCapacity = 100;
-    [SerializeField] int _maxPoolSize = 500;
+    [SerializeField] int _defaultCapacity = GameConstants.Defaults.DEFAULT_BULLET_POOL_CAPACITY;
+    [SerializeField] int _maxPoolSize = GameConstants.Defaults.MAX_BULLET_POOL_SIZE;
     
     ObjectPool<Bullet> _pool;
     

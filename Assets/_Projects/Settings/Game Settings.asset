@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 41f181e1cd1ef604a980a8d7052e2cf4, type: 3}
+  m_Name: Game Settings
+  m_EditorClassIdentifier: 
+  PlayAreaWidth: 1152
+  PlayAreaHeight: 1080
+  BoundaryMargin: 100
+  PlayerNormalSpeed: 300
+  PlayerSlowSpeed: 100
+  BulletBoundaryMargin: 50

@@ -14,21 +14,6 @@ public class StageManager : MonoBehaviour
     bool _stageCleared;
     BossEnemy _currentBoss;
     
-    void Awake()
-    {
-        
-    }
-    
-    void Start()
-    {
-        
-    }
-    
-    void Update()
-    {
-        
-    }
-    
     public void StartStage()
     {
         

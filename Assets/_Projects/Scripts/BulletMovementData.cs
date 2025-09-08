@@ -6,19 +6,19 @@ public class BulletMovementData
     public Vector2 Direction;
     public float Speed;
     public bool IsPlayerBullet;
-    public int Damage = 1;
-    public float Lifetime = 10f;
+    public int Damage = GameConstants.Defaults.DEFAULT_DAMAGE;
+    public float Lifetime = GameConstants.Defaults.DEFAULT_BULLET_LIFETIME;
     
     public BulletMovementData()
     {
         Direction = Vector2.up;
-        Speed = 300f;
+        Speed = GameConstants.Defaults.DEFAULT_BULLET_SPEED;
         IsPlayerBullet = false;
-        Damage = 1;
-        Lifetime = 10f;
+        Damage = GameConstants.Defaults.DEFAULT_DAMAGE;
+        Lifetime = GameConstants.Defaults.DEFAULT_BULLET_LIFETIME;
     }
     
-    public BulletMovementData(Vector2 direction, float speed, bool isPlayerBullet, int damage = 1, float lifetime = 10f)
+    public BulletMovementData(Vector2 direction, float speed, bool isPlayerBullet, int damage = GameConstants.Defaults.DEFAULT_DAMAGE, float lifetime = GameConstants.Defaults.DEFAULT_BULLET_LIFETIME)
     {
         Direction = direction;
         Speed = speed;
