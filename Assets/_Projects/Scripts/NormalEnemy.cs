@@ -33,6 +33,9 @@ public class NormalEnemy : Enemy
 
     public override void Initialize(EnemySpawnData spawnData)
     {
+        // 基底クラスの初期化を呼び出す（_isDead = false等）
+        base.Initialize(spawnData);
+        
         _spawnData = spawnData;
         _moveDirection = spawnData.MoveDirection.normalized;
         _moveSpeed = spawnData.MoveSpeed;
@@ -41,6 +44,10 @@ public class NormalEnemy : Enemy
         
         // HealthをspawnDataから設定
         _health = spawnData.Health;
+        
+#if UNITY_EDITOR
+        Debug.Log($"NormalEnemy {gameObject.name} initialized - MoveDirection: {_moveDirection}, MoveSpeed: {_moveSpeed}, Health: {_health}");
+#endif
     }
 
     protected override void Move()
@@ -69,6 +76,15 @@ public class NormalEnemy : Enemy
         // _fireRateが0の場合は攻撃しない（ゼロ除算を防止）
         if (_fireRate <= 0f)
         {
+            return;
+        }
+        
+        // BulletPoolの存在チェック
+        if (BulletPool.Instance == null)
+        {
+#if UNITY_EDITOR
+            Debug.LogWarning($"BulletPool.Instance is null for enemy {gameObject.name}");
+#endif
             return;
         }
             

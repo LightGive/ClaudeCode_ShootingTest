@@ -53,12 +53,22 @@ public class EnemySpawner : MonoBehaviour
     
     public void StartNextWave()
     {
+#if UNITY_EDITOR
+        Debug.Log($"StartNextWave called. Current: {_currentWaveIndex}, Total: {_enemyWaves.Length}");
+#endif
+        
         if (_currentWaveIndex + 1 < _enemyWaves.Length)
         {
+#if UNITY_EDITOR
+            Debug.Log($"Starting wave {_currentWaveIndex + 2}");
+#endif
             StartWave(_currentWaveIndex + 1);
         }
         else
         {
+#if UNITY_EDITOR
+            Debug.Log("All waves completed!");
+#endif
             OnAllWavesCompleted?.Invoke();
         }
     }
@@ -150,22 +160,45 @@ public class EnemySpawner : MonoBehaviour
     
     void SpawnEnemy(EnemySpawnData spawnData)
     {
+#if UNITY_EDITOR
+        Debug.Log($"SpawnEnemy called for prefab: {(spawnData.EnemyPrefab != null ? spawnData.EnemyPrefab.name : "NULL")}");
+#endif
+        
         if (spawnData.EnemyPrefab == null)
         {
             Debug.LogWarning("Enemy prefab is null");
             return;
         }
         
-        GameObject enemyObj = Instantiate(spawnData.EnemyPrefab, spawnData.SpawnPosition, Quaternion.identity, transform);
-        Enemy enemy = enemyObj.GetComponent<Enemy>();
+#if UNITY_EDITOR
+        Debug.Log($"Attempting to get enemy from pool for: {spawnData.EnemyPrefab.name}");
+#endif
+        
+        Enemy enemy = EnemyPool.Instance.GetEnemy(spawnData.EnemyPrefab, spawnData.SpawnPosition, spawnData, transform);
+        
+#if UNITY_EDITOR
+        Debug.Log($"Enemy from pool: {(enemy != null ? enemy.name : "NULL")}");
+#endif
         
         if (enemy != null)
         {
+            enemy.SetOriginalPrefab(spawnData.EnemyPrefab);
+            
+#if UNITY_EDITOR
+            Debug.Log($"Enemy spawned successfully: {enemy.name} at position {spawnData.SpawnPosition}");
+#endif
+            
             // 敵の初期化
             enemy.Initialize(spawnData);
             
             _activeEnemies.Add(enemy);
             enemy.OnDestroyed += OnEnemyDestroyed;
+        }
+        else
+        {
+#if UNITY_EDITOR
+            Debug.LogError($"Failed to get enemy from pool for prefab: {spawnData.EnemyPrefab.name}");
+#endif
         }
     }
     
