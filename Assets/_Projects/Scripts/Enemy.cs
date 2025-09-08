@@ -10,7 +10,7 @@ public abstract class Enemy : MonoBehaviour
     public event System.Action<Enemy> OnDestroyed;
     protected bool _isDead;
     
-        void Update()
+    void Update()
     {
         if (!_isDead)
         {

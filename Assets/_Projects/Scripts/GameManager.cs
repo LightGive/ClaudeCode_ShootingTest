@@ -19,7 +19,7 @@ public class GameManager : MonoBehaviour
         GameClear
     }
     
-        public void StartGame()
+    public void StartGame()
     {
         
     }

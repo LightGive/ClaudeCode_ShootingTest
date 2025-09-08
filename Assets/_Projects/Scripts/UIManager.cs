@@ -23,7 +23,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] Button _resumeButton;
     [SerializeField] Button _quitButton;
     
-        public void UpdateLivesDisplay(int lives)
+    public void UpdateLivesDisplay(int lives)
     {
         
     }

@@ -9,8 +9,17 @@ public class Bullet : MonoBehaviour
     [SerializeField] bool _isPlayerBullet;
     [SerializeField] GameSettings _gameSettings;
     
+    Rigidbody2D _rigidbody2D;
+    
     void Awake()
     {
+        // Rigidbody2Dをキャッシュ
+        _rigidbody2D = GetComponent<Rigidbody2D>();
+        if (_rigidbody2D == null)
+        {
+            Debug.LogError($"Rigidbody2D component is required for Bullet physics movement. Please add Rigidbody2D component.", this);
+        }
+        
         // GameSettingsが未設定の場合の警告
         if (_gameSettings == null)
         {
@@ -18,20 +27,20 @@ public class Bullet : MonoBehaviour
         }
     }
     
-    void Start()
-    {
-        
-    }
-    
     void Update()
     {
-        Move();
         CheckBounds();
+    }
+    
+    void FixedUpdate()
+    {
+        Move();
     }
     
     void Move()
     {
-        transform.position += (Vector3)(_direction * _speed * Time.deltaTime);
+        Vector2 newPosition = _rigidbody2D.position + (_direction * _speed * Time.fixedDeltaTime);
+        _rigidbody2D.MovePosition(newPosition);
     }
     
     void CheckBounds()
