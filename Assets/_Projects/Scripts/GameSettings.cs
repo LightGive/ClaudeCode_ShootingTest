@@ -34,6 +34,12 @@ public class GameSettings : ScriptableObject
     [Tooltip("弾丸の画面外判定マージン")]
     public float BulletBoundaryMargin = GameConstants.Boundaries.BULLET_BOUNDARY_MARGIN;
     
+    // プレイヤー用境界プロパティ
+    public float PlayerLeftBoundary => -(PlayAreaWidth / GameConstants.Boundaries.BOUNDARY_CALCULATION_DIVISOR);
+    public float PlayerRightBoundary => (PlayAreaWidth / GameConstants.Boundaries.BOUNDARY_CALCULATION_DIVISOR);
+    public float PlayerTopBoundary => (PlayAreaHeight / GameConstants.Boundaries.BOUNDARY_CALCULATION_DIVISOR);
+    public float PlayerBottomBoundary => -(PlayAreaHeight / GameConstants.Boundaries.BOUNDARY_CALCULATION_DIVISOR);
+    
     // 弾丸用境界プロパティ
     public float BulletLeftBoundary => -(PlayAreaWidth / GameConstants.Boundaries.BOUNDARY_CALCULATION_DIVISOR) - BulletBoundaryMargin;
     public float BulletRightBoundary => (PlayAreaWidth / GameConstants.Boundaries.BOUNDARY_CALCULATION_DIVISOR) + BulletBoundaryMargin;

@@ -34,7 +34,7 @@ public class NormalEnemy : Enemy
     public override void Initialize(EnemySpawnData spawnData)
     {
         _spawnData = spawnData;
-        _moveDirection = spawnData.MoveDirection;
+        _moveDirection = spawnData.MoveDirection.normalized;
         _moveSpeed = spawnData.MoveSpeed;
         _fireRate = spawnData.FireRate;
         _nextFireTime = Time.time + spawnData.FireDelay;

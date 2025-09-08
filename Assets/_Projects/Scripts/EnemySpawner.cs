@@ -156,7 +156,7 @@ public class EnemySpawner : MonoBehaviour
             return;
         }
         
-        GameObject enemyObj = Instantiate(spawnData.EnemyPrefab, spawnData.SpawnPosition, Quaternion.identity);
+        GameObject enemyObj = Instantiate(spawnData.EnemyPrefab, spawnData.SpawnPosition, Quaternion.identity, transform);
         Enemy enemy = enemyObj.GetComponent<Enemy>();
         
         if (enemy != null)

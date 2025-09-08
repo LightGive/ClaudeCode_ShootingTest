@@ -114,8 +114,8 @@ public class Player : MonoBehaviour
             // 画面端での移動制限（GameSettingsを使用）
             if (_gameSettings != null)
             {
-                newPosition.x = Mathf.Clamp(newPosition.x, -_gameSettings.PlayAreaWidth / GameConstants.Boundaries.BOUNDARY_CALCULATION_DIVISOR, _gameSettings.PlayAreaWidth / GameConstants.Boundaries.BOUNDARY_CALCULATION_DIVISOR);
-                newPosition.y = Mathf.Clamp(newPosition.y, -_gameSettings.PlayAreaHeight / GameConstants.Boundaries.BOUNDARY_CALCULATION_DIVISOR, _gameSettings.PlayAreaHeight / GameConstants.Boundaries.BOUNDARY_CALCULATION_DIVISOR);
+                newPosition.x = Mathf.Clamp(newPosition.x, _gameSettings.PlayerLeftBoundary, _gameSettings.PlayerRightBoundary);
+                newPosition.y = Mathf.Clamp(newPosition.y, _gameSettings.PlayerBottomBoundary, _gameSettings.PlayerTopBoundary);
             }
             
             _rigidbody2D.MovePosition(newPosition);
