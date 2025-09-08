@@ -13,6 +13,11 @@ public class Player : MonoBehaviour
     float _nextFireTime;
     Rigidbody2D _rigidbody2D;
     
+    // キャッシュされた速度値
+    float _normalSpeed;
+    float _slowSpeed;
+    float _bulletSpeed;
+    
     void Awake()
     {
         // GameSettingsが未設定の場合はエラーを出して明確に通知
@@ -32,6 +37,20 @@ public class Player : MonoBehaviour
     void Start()
     {
         _remainingLives = GameConstants.Defaults.DEFAULT_LIFE_COUNT;
+        
+        // 速度値をキャッシュしてパフォーマンス最適化
+        if (_gameSettings != null)
+        {
+            _normalSpeed = _gameSettings.PlayerNormalSpeed;
+            _slowSpeed = _gameSettings.PlayerSlowSpeed;
+            _bulletSpeed = _gameSettings.PlayerBulletSpeed;
+        }
+        else
+        {
+            _normalSpeed = GameConstants.Defaults.PLAYER_NORMAL_SPEED;
+            _slowSpeed = GameConstants.Defaults.PLAYER_SLOW_SPEED;
+            _bulletSpeed = GameConstants.Defaults.PLAYER_BULLET_SPEED;
+        }
         
         // デフォルト値を設定（Inspectorで設定しない場合）
         if (_bulletFireRate <= 0f)
@@ -89,9 +108,7 @@ public class Player : MonoBehaviour
         
         if (movement != Vector3.zero)
         {
-            float currentSpeed = _gameSettings != null ? 
-                (_isSlowMode ? _gameSettings.PlayerSlowSpeed : _gameSettings.PlayerNormalSpeed) :
-                (_isSlowMode ? GameConstants.Defaults.PLAYER_SLOW_SPEED : GameConstants.Defaults.PLAYER_NORMAL_SPEED);
+            float currentSpeed = _isSlowMode ? _slowSpeed : _normalSpeed;
             Vector3 newPosition = _rigidbody2D.position + (Vector2)(movement.normalized * currentSpeed * Time.fixedDeltaTime);
             
             // 画面端での移動制限（GameSettingsを使用）
@@ -111,7 +128,7 @@ public class Player : MonoBehaviour
         {
             BulletMovementData movementData = new BulletMovementData(
                 Vector2.up, 
-                GameConstants.Defaults.PLAYER_BULLET_SPEED, 
+                _bulletSpeed, 
                 true
             );
             

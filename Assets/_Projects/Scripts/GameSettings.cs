@@ -27,6 +27,9 @@ public class GameSettings : ScriptableObject
     [Tooltip("プレイヤーの低速移動速度")]
     public float PlayerSlowSpeed = GameConstants.Defaults.PLAYER_SLOW_SPEED;
     
+    [Tooltip("プレイヤーの弾丸速度")]
+    public float PlayerBulletSpeed = GameConstants.Defaults.PLAYER_BULLET_SPEED;
+    
     [Header("弾丸設定")]
     [Tooltip("弾丸の画面外判定マージン")]
     public float BulletBoundaryMargin = GameConstants.Boundaries.BULLET_BOUNDARY_MARGIN;
